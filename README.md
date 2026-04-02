@@ -1,6 +1,6 @@
 # StrafatFX
 
-StrafatFX is a lightweight, browser-based gradient text generator built for creating styled usernames, tags, and short text effects. It focuses on speed, simplicity, and giving users full control over how their text looks before copying it anywhere.
+StrafatFX is a lightweight, browser-based gradient text generator built for creating styled usernames, tags, and chat text specifically for Strafat. It focuses on speed, simplicity, and giving users full control over how their text looks before copying it anywhere.
 
 ## Features
 
@@ -11,13 +11,27 @@ StrafatFX is a lightweight, browser-based gradient text generator built for crea
 - Copy-ready output for quick use  
 - Save and manage usernames and quips using localStorage  
 - Toggleable remove mode for quick cleanup  
+- Integrated guide view explaining usage directly in the app  
+- GitHub link for quick access to source code  
+- Output-based character counter (accurate to final formatted text)  
+- Steam-safe indicator (warns when output exceeds ~32 characters)  
+- Unified gradient-driven UI (buttons, input glow, and controls)  
 - Clean, responsive interface  
 
 ## How It Works
 
-StrafatFX generates gradients by interpolating between two selected colors and applying them across visible characters in the text. Users can control how the gradient is distributed using different modes, including per-letter and custom step-based gradients.
+StrafatFX generates gradients by interpolating between two selected colors and applying them across visible characters in the text.
 
-The app builds a formatted output string using color tags and optional style tags, then renders both a preview and a copyable version of the result.
+Depending on the selected mode, the gradient is either:
+- Applied per letter (smooth transition)
+- Distributed in stepped segments (1/2, 1/3, 1/4)
+- Fully controlled using a custom step slider
+
+The app builds a formatted output string using color tags and optional style tags, then renders both:
+- A visual preview for readability
+- A raw output string for copying and pasting into Strafat
+
+The character counter reflects the **final formatted output length**, including all color and style tags.
 
 ## Tech Stack
 
@@ -37,6 +51,7 @@ The app builds a formatted output string using color tags and optional style tag
 - `saved.mjs` – Saved usernames and quips system  
 - `storage.mjs` – localStorage utilities  
 - `state.mjs` – Global state management  
+- `guide.mjs` – Guide view logic and live examples  
 - `styles.css` – UI styling  
 
 ## Usage
@@ -47,7 +62,15 @@ The app builds a formatted output string using color tags and optional style tag
 4. Apply optional styles  
 5. Copy the generated output  
 
-You can also save frequently used usernames or quips and reuse them instantly.
+Saved usernames and quips can be reused instantly, and remove mode allows quick cleanup.
+
+## Interface Notes
+
+- The preview shows how your text will look visually  
+- The output shows the actual formatted string used in-game  
+- The character counter reflects the true output length  
+- Output turns yellow when exceeding Steam-safe limits (~32 characters)  
+- Output turns red when approaching the maximum limit (500 characters)  
 
 ## Goals
 
@@ -60,7 +83,6 @@ StrafatFX was built to provide a fast, no-friction way to generate styled text w
 - Preset themes  
 - Export/share options  
 - Profile system for saved data  
-
 
 ## Usage Notice
 
