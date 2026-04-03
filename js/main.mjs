@@ -6,6 +6,8 @@ import { state } from "./state.mjs";
 import { applyStyles } from "./formatter.mjs";
 import { initGuide } from "./guide.mjs";
 import { initLogoAudio } from "./logoAudio.mjs";
+import { initFloating } from "./floating.mjs";
+
 
 const el = id => document.getElementById(id);
 
@@ -361,7 +363,9 @@ requestAnimationFrame(() => {
   const [c1, c2] = randColor();
   setColors(c1, c2);
 
-  renderSaved(userList, quipList);
+  renderSaved(userList, quipList, input, output, outputDisplay, update);
+
+  initFloating(20);
 
   window.guide = initGuide({ depth });
 

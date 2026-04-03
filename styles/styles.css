@@ -714,3 +714,34 @@ h1 {
     border: 1px solid rgba(255, 255, 255, .1);
     color: #fff;
 }
+
+#floating-bg {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+}
+
+.floating-item {
+    position: absolute;
+    opacity: 0.15;
+    pointer-events: none;
+    will-change: transform;
+}
+
+.floating-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@keyframes floatY {
+    from { transform: translateY(0px); }
+    to   { transform: translateY(-80px); }
+}
