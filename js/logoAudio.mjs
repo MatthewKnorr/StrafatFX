@@ -1,9 +1,9 @@
 const sounds = [
-  "/assets/audio/astur.mp3",
-  "/assets/audio/auh-au-hu.mp3",
-  "/assets/audio/auurrrrr.mp3",
-  "/assets/audio/baurrr.mp3",
-  "/assets/audio/boy.mp3"
+  "./assets/audio/astur.mp3",
+  "./assets/audio/auh-au-hu.mp3",
+  "./assets/audio/auurrrrr.mp3",
+  "./assets/audio/baurrr.mp3",
+  "./assets/audio/boy.mp3"
 ];
 
 let currentAudio = null;
