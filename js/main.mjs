@@ -5,6 +5,7 @@ import { getList, saveList } from "./storage.mjs";
 import { state } from "./state.mjs";
 import { applyStyles } from "./formatter.mjs";
 import { initGuide } from "./guide.mjs";
+import { initLogoAudio } from "./logoAudio.mjs";
 
 const el = id => document.getElementById(id);
 
@@ -65,7 +66,6 @@ function copy(text, label = "Copied") {
   showToast(label);
 }
 
-/* 🔥 NEW RANDOM COLOR SYSTEM */
 function randColor(minDistance = 120) {
   function get() {
     return {
@@ -313,7 +313,7 @@ saveQuipBtn.onclick = () => {
   list.push(v);
   saveList("gd-quips", list);
 
-  renderSaved(userList, quipList);
+  renderSaved(userList, quipList);  
   showToast("Quip saved");
 };
 
@@ -334,7 +334,7 @@ requestAnimationFrame(() => {
   window.guide = initGuide({ depth });
 
   updateCharCount();
-
+  initLogoAudio();
 });
 
 

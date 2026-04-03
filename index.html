@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>StrafatFX</title>
-  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./assets/icons/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./styles/styles.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/nano.min.css">
   <script src="https://cdn.jsdelivr.net/npm/@simonwep/pickr"></script>
@@ -16,7 +16,10 @@
   <div class="container">
 
     <div class="header">
-      <img src="./assets/StraftatFX.png" class="logo">
+      <div class="logo-wrap">
+        <img src="./assets/pngs/logo.png" class="logo">
+        <span class="logo-tooltip">CLICK ME -></span>
+      </div>
       <h1>StrafatFX</h1>
 
       <div class="header-actions">
@@ -79,11 +82,11 @@
 
     <div class="output-wrapper">
       <div id="outputDisplay"></div>
+      <div id="charCount" class="output-count">0 / 500</div>
       <textarea id="output"></textarea>
-      
       <button id="copyBtn">Copy</button>
     </div>
-    
+
 
     <div class="save-actions">
       <button id="saveUserBtn">Save Username</button>
