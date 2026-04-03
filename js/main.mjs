@@ -202,12 +202,15 @@ copyBtn.onclick = () => {
   const text = stripClosingTags(output.value);
   copy(text);
 
+
   if (typeof gtag === "function") {
+
     gtag('event', 'generate', {
       event_category: 'usage',
-      event_label: 'copy_clicked',
-      value: text.length
+      event_label: 'copy_clicked'
     });
+  } else {
+    console.log("❌ GTAG NOT FOUND");
   }
 };
 

@@ -20,7 +20,6 @@ export function initLogoAudio() {
   }
 
   logo.addEventListener("click", () => {
-    console.log("logo clicked");
 
     if (currentAudio) {
       currentAudio.pause();
