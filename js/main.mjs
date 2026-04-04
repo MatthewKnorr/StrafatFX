@@ -8,7 +8,6 @@ import { initGuide } from "./guide.mjs";
 import { initLogoAudio } from "./logoAudio.mjs";
 import { initFloating } from "./floating.mjs";
 
-
 const el = id => document.getElementById(id);
 
 const input = el("textInput");
@@ -122,12 +121,17 @@ function setColors(c1, c2) {
   updateGradientBar();
   update();
 
-
   if (typeof guide !== "undefined") {
     guide.updateGuideExample();
   }
 
   updateUIGradient();
+
+  if (window.gtag) {
+    window.gtag('event', 'color_change', {
+      event_category: 'feature'
+    });
+  }
 }
 
 function fitPreview() {
@@ -188,10 +192,9 @@ randomBtn.onclick = () => {
   const [c1, c2] = randColor();
   setColors(c1, c2);
 
-  if (typeof gtag === "function") {
-    gtag('event', 'random_colors', {
-      event_category: 'interaction',
-      event_label: 'random_gradient_generated'
+  if (window.gtag) {
+    window.gtag('event', 'random_used', {
+      event_category: 'feature'
     });
   }
 };
@@ -205,10 +208,14 @@ copyBtn.onclick = () => {
   const text = stripClosingTags(output.value);
   copy(text);
 
-  if (typeof gtag === "function") {
-    gtag('event', 'copy_text', {
+  if (window.gtag) {
+    window.gtag('event', 'copy_text', {
       event_category: 'engagement',
-      event_label: 'copy_clicked',
+      value: text.length
+    });
+
+    window.gtag('event', 'conversion_copy', {
+      event_category: 'conversion',
       value: text.length
     });
   }
@@ -246,6 +253,13 @@ document.querySelectorAll(".mode").forEach(b => {
     }
 
     update();
+
+    if (window.gtag) {
+      window.gtag('event', 'mode_change', {
+        event_category: 'feature',
+        event_label: `mode_${mode}`
+      });
+    }
   };
 });
 
@@ -255,19 +269,34 @@ depth.oninput = () => {
 };
 
 let lastTracked = "";
+let trackTimeout;
 
 function update() {
   const text = input.value;
 
-  if (typeof gtag === "function" && text !== lastTracked) {
-    gtag('event', 'generate_text', {
-      event_category: 'usage',
-      event_label: 'text_updated',
-      value: text.length
-    });
+  clearTimeout(trackTimeout);
 
-    lastTracked = text;
-  }
+  trackTimeout = setTimeout(() => {
+    if (window.gtag && text !== lastTracked) {
+      window.gtag('event', 'generate_text', {
+        event_category: 'usage',
+        value: text.length
+      });
+
+      const len = text.length;
+      let bucket = "short";
+      if (len > 10) bucket = "medium";
+      if (len > 20) bucket = "long";
+      if (len > 32) bucket = "steam_limit";
+
+      window.gtag('event', 'text_length', {
+        event_category: 'usage',
+        event_label: bucket
+      });
+
+      lastTracked = text;
+    }
+  }, 400);
 
   const textLen = text.length || 1;
   depth.max = textLen;
@@ -309,8 +338,8 @@ function update() {
     superscript: superscript.checked
   });
 
-  if (typeof gtag === "function" && text.length > 3) {
-    gtag('event', 'active_use', {
+  if (window.gtag && text.length > 3) {
+    window.gtag('event', 'active_use', {
       event_category: 'engagement',
       value: text.length
     });
@@ -323,6 +352,12 @@ function update() {
 saveUserBtn.onclick = () => {
   const v = stripClosingTags(output.value.trim());
   if (!v) return;
+
+  if (window.gtag) {
+    window.gtag('event', 'attempt_save_username', {
+      event_category: 'engagement'
+    });
+  }
 
   let list = getList("gd-users");
 
@@ -337,8 +372,8 @@ saveUserBtn.onclick = () => {
   renderSaved(userList, quipList);
   showToast("Username saved");
 
-  if (typeof gtag === "function") {
-    gtag('event', 'save_username', {
+  if (window.gtag) {
+    window.gtag('event', 'save_username', {
       event_category: 'engagement'
     });
   }
@@ -361,8 +396,8 @@ saveQuipBtn.onclick = () => {
   renderSaved(userList, quipList);
   showToast("Quip saved");
 
-  if (typeof gtag === "function") {
-    gtag('event', 'save_quip', {
+  if (window.gtag) {
+    window.gtag('event', 'save_quip', {
       event_category: 'engagement'
     });
   }
@@ -390,7 +425,6 @@ requestAnimationFrame(() => {
   initLogoAudio();
 });
 
-
 const guideView = document.getElementById("guideView");
 const openGuide = document.getElementById("openGuide");
 const closeGuide = document.getElementById("closeGuide");
@@ -398,6 +432,12 @@ const closeGuide = document.getElementById("closeGuide");
 if (openGuide && guideView) {
   openGuide.addEventListener("click", () => {
     guideView.classList.remove("hidden");
+
+    if (window.gtag) {
+      window.gtag('event', 'open_guide', {
+        event_category: 'navigation'
+      });
+    }
   });
 }
 
@@ -419,7 +459,6 @@ function updateGuideExample() {
 
   const text = "UberMonkey";
 
-  const built = build(text, depth);
   const styledParts = parts(text, depth);
 
   el.innerHTML = "";
