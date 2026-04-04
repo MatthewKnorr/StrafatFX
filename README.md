@@ -1,6 +1,6 @@
 # StraftatFX
 
-StraftatFX is a lightweight, browser-based gradient text generator built for creating styled usernames, tags, and chat text specifically for Strafat. It focuses on speed, simplicity, and giving users full control over how their text looks before copying it anywhere.
+StraftatFX is a lightweight, browser-based gradient text generator built for creating styled usernames, tags, and chat text specifically for Straftat. It focuses on speed, simplicity, and giving users full control over how their text looks before copying it anywhere.
 
 ## Features
 
@@ -29,7 +29,7 @@ Depending on the selected mode, the gradient is either:
 
 The app builds a formatted output string using color tags and optional style tags, then renders both:
 - A visual preview for readability
-- A raw output string for copying and pasting into Strafat
+- A raw output string for copying and pasting into Straftat
 
 The character counter reflects the **final formatted output length**, including all color and style tags.
 
