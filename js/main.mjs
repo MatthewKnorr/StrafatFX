@@ -108,6 +108,16 @@ window.addEventListener("DOMContentLoaded", () => {
     autoCopyBtn.classList.toggle("active", autoCopyEnabled);
   }
 
+  function trackAutoCopy(action, text = "") {
+    if (!window.gtag) return;
+
+    window.gtag("event", action, {
+      event_category: "engagement",
+      event_label: autoCopyEnabled ? "enabled" : "disabled",
+      value: text.length
+    });
+  }
+
   function formatPresetCategory(label) {
     if (label === favoritePresetCategory) return favoritePresetCategory;
     return label.replace(/_/g, " ");
@@ -811,12 +821,14 @@ window.addEventListener("DOMContentLoaded", () => {
     autoCopyEnabled = !autoCopyEnabled;
     localStorage.setItem("gd-auto-copy", autoCopyEnabled ? "1" : "0");
     renderAutoCopyButton();
+    trackAutoCopy("auto_copy_toggle");
 
     if (autoCopyEnabled) {
       const text = stripClosingTags(output.value);
       if (text) {
         copy(text, "Auto copy enabled", { silent: false });
         lastAutoCopied = text;
+        trackAutoCopy("auto_copy_trigger", text);
         return;
       }
     }
@@ -934,6 +946,7 @@ window.addEventListener("DOMContentLoaded", () => {
     if (autoCopyEnabled && clean && clean !== lastAutoCopied) {
       lastAutoCopied = clean;
       copy(clean, "Copied", { silent: true });
+      trackAutoCopy("auto_copy_trigger", clean);
     }
 
     renderPreview(preview, parts(text, depth), {
