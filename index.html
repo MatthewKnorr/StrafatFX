@@ -31,6 +31,14 @@
 
 <body>
   <div id="floating-bg"></div>
+  <div class="theme-dock" aria-label="Color mode">
+    <button class="theme-mode active" data-theme-mode="dark" type="button" aria-label="Dark mode" title="Dark mode">
+      <img src="./assets/pngs/floating/Stungrenade.png" alt="">
+    </button>
+    <button class="theme-mode" data-theme-mode="light" type="button" aria-label="Light mode" title="Light mode">
+      <img src="./assets/pngs/floating/Grenade.png" alt="">
+    </button>
+  </div>
   <div class="container">
 
     <div class="header">
@@ -38,7 +46,7 @@
         <img src="./assets/pngs/logo.png" class="logo">
         <span class="logo-tooltip">CLICK ME -></span>
       </div>
-      <h1>StraftatFX</h1>
+      <h1>StraftatFX<span class="version-mark">v.3</span></h1>
 
       <div class="header-actions">
         <button id="openGuide" class="guide-btn">
@@ -54,6 +62,24 @@
       <input id="textInput" placeholder="Type Here...">
     </div>
 
+    <div class="random-quips" id="randomQuips" aria-live="polite">
+      <div class="random-quips-header">
+        <span>Verbal Arsenal</span>
+        <div class="random-quips-actions">
+          <button id="refreshQuipsBtn" class="hidden" type="button" aria-label="Randomize verbal arsenal" title="Randomize verbal arsenal">
+            <i class="fa-solid fa-shuffle"></i>
+          </button>
+          <button id="toggleQuipsBtn" class="quip-caret-btn" type="button" aria-label="Expand verbal arsenal" aria-expanded="false">
+            <i class="fa-solid fa-caret-down"></i>
+          </button>
+        </div>
+      </div>
+      <div class="random-quips-body hidden" id="randomQuipsBody">
+        <div class="random-quips-categories" id="randomQuipCategories" aria-label="Random gamer text categories"></div>
+        <div class="random-quips-list" id="randomQuipsList"></div>
+      </div>
+    </div>
+
     <div id="charWarning" class="char-warning hidden">
       ⚠ Max 500 characters reached
     </div>
@@ -61,6 +87,8 @@
     <div class="gradient-bar" id="gradientBar">
       <div class="gradient-handles" id="gradientHandles"></div>
     </div>
+
+    <div class="recent-gradients hidden" id="recentGradients" aria-label="Recent gradients"></div>
 
     <div class="gradient-toolbar" id="gradientToolbar"></div>
 
@@ -71,34 +99,126 @@
       <button class="color-count-btn" data-color-count="4">4 Colors</button>
     </div>
 
-    <div class="intensity-panel" id="intensityPanel">
-      <button class="intensity-toggle" id="intensityToggle" type="button">
-        <span>Gradient Intensity Control</span>
-        <span class="intensity-current" id="intensityCurrent">Per Letter</span>
+    <div class="advanced-panel" id="advancedPanel">
+      <button class="advanced-toggle" id="advancedToggle" type="button">
+        <span>Advanced Controls</span>
+        <span class="intensity-current" id="advancedCurrent">Closed</span>
       </button>
 
-      <div class="intensity-content hidden" id="intensityContent">
-        <div class="mode-group">
-          <button class="mode" data-mode="1">1</button>
-          <button class="mode" data-mode="2">1/2</button>
-          <button class="mode" data-mode="3">1/3</button>
-          <button class="mode" data-mode="4">1/4</button>
-          <button class="mode active" data-mode="5">Per Letter</button>
-          <button class="mode" data-mode="6">Custom</button>
+      <div class="advanced-content hidden" id="advancedContent">
+        <div class="advanced-tabs" role="tablist" aria-label="Advanced controls">
+          <button class="advanced-tab active" data-advanced-tab="text" type="button" role="tab" aria-selected="true">TEXT EFFECTS</button>
+          <button class="advanced-tab" data-advanced-tab="gradient" type="button" role="tab" aria-selected="false">GRADIENT CONTROLS</button>
+        </div>
+
+        <div class="advanced-tab-panel" data-advanced-panel="text" role="tabpanel">
+          <div class="effects-panel" id="effectsPanel">
+            <div class="effects-header">
+              <button class="intensity-toggle effects-toggle open" id="effectsToggle" type="button">
+                <span>Text Effects</span>
+                <span class="intensity-current" id="effectsCurrent">Off</span>
+              </button>
+              <button class="effects-reset-btn" id="effectsResetBtn" type="button" aria-label="Reset rich text effects" title="Reset rich text effects">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+
+            <div class="effects-content" id="effectsContent">
+              <div class="effects-section effects-section-style">
+                <div class="effects-section-title">Style</div>
+                <div class="effects-inline-row" aria-label="Text style toggles">
+                  <label class="effect-control inline-effect"><span>Bold</span><input type="checkbox" id="bold"><b>B</b></label>
+                  <label class="effect-control inline-effect"><span>Italic</span><input type="checkbox" id="italic"><b><i>I</i></b></label>
+                  <label class="effect-control inline-effect"><span>Underline</span><input type="checkbox" id="underline"><b><u>U</u></b></label>
+                  <label class="effect-control inline-effect"><span>Strike</span><input type="checkbox" id="strike"><b><s>S</s></b></label>
+                  <label class="effect-control inline-effect"><span>Sup</span><input type="checkbox" id="superscript"><b>Sup</b></label>
+                  <label class="effect-control inline-effect"><span>Sub</span><input type="checkbox" id="subscript"><b>Sub</b></label>
+                </div>
+                <div class="effects-grid style-options-row">
+                  <div class="effect-control">
+                    <span>Case</span>
+                    <input type="hidden" id="caseEffect">
+                    <div class="effects-option-row case-option-row" aria-label="Case options">
+                      <button type="button" class="option-effect" data-option-target="caseEffect" data-option-value="smallcaps">Small Case</button>
+                      <button type="button" class="option-effect" data-option-target="caseEffect" data-option-value="uppercase">Uppercase</button>
+                    </div>
+                  </div>
+                  <div class="effect-control">
+                    <span>Align</span>
+                    <input type="hidden" id="align">
+                    <div class="effects-option-row align-option-row" aria-label="Alignment options">
+                      <button type="button" class="option-effect active" data-option-target="align" data-option-value="">Left</button>
+                      <button type="button" class="option-effect" data-option-target="align" data-option-value="center">Center</button>
+                      <button type="button" class="option-effect" data-option-target="align" data-option-value="right">Right</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="effects-section">
+                <div class="effects-section-title">Spacing</div>
+                <div class="effects-grid">
+                  <label class="effect-control"><span>letter spacing</span><input type="number" id="cspace" step="1" min="-80" max="80" placeholder="px"></label>
+                  <label class="effect-control"><span>fixed width</span><input type="number" id="mspace" step="1" min="0" max="80" placeholder="px"></label>
+                </div>
+              </div>
+
+              <div class="effects-section">
+                <div class="effects-section-title">Layout</div>
+                <div class="effects-grid effects-grid-dense">
+                  <label class="effect-control"><span>position</span><input type="number" id="pos" step="1" min="-500" max="500" placeholder="px"></label>
+                  <label class="effect-control"><span>width</span><input type="number" id="widthEffect" step="1" min="1" max="100" placeholder="%"></label>
+                  <label class="effect-control"><span>rotate</span><input type="number" id="rotate" step="1" min="-360" max="360" placeholder="deg"></label>
+                  <label class="effect-control"><span>vertical offset</span><input type="number" id="voffset" step="0.1" min="-5" max="5" placeholder="em"></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="advanced-tab-panel hidden" data-advanced-panel="gradient" role="tabpanel">
+          <div class="intensity-panel" id="intensityPanel">
+            <div class="effects-header gradient-controls-header">
+              <button class="intensity-toggle open" id="intensityToggle" type="button">
+                <span>Gradient Intensity Control</span>
+                <span class="intensity-current" id="intensityCurrent">Per Letter</span>
+              </button>
+              <button class="effects-reset-btn" id="gradientResetBtn" type="button" aria-label="Reset gradient controls" title="Reset gradient controls">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+
+            <div class="intensity-content" id="intensityContent">
+              <div class="mode-group">
+                <button class="mode" data-mode="1">1</button>
+                <button class="mode" data-mode="2">1/2</button>
+                <button class="mode" data-mode="3">1/3</button>
+                <button class="mode" data-mode="4">1/4</button>
+                <button class="mode active" data-mode="5">Per Letter</button>
+                <button class="mode" data-mode="6">Custom</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="slider-group hidden" id="sliderGroup">
+            <label>Steps: <span id="stepValue">1</span></label>
+            <input type="range" id="depth" min="1" max="10" value="2">
+          </div>
+
+          <div class="temperature-panel">
+            <label for="temperatureSlider">
+              <span>Temperature</span>
+              <span id="temperatureValue">Mixed</span>
+            </label>
+            <input type="range" id="temperatureSlider" min="-100" max="100" value="0">
+            <div class="temperature-scale" aria-hidden="true">
+              <span>Cool</span>
+              <span>Mixed</span>
+              <span>Warm</span>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div class="slider-group hidden" id="sliderGroup">
-      <label>Steps: <span id="stepValue">1</span></label>
-      <input type="range" id="depth" min="1" max="10" value="2">
-    </div>
-
-    <div class="toggles">
-      <label>Bold <input type="checkbox" id="bold"></label>
-      <label>Italic <input type="checkbox" id="italic"></label>
-      <label>Underline <input type="checkbox" id="underline"></label>
-      <label>Superscript <input type="checkbox" id="superscript"></label>
     </div>
 
     <div id="preview"></div>
@@ -118,14 +238,10 @@
       <button id="saveGradientBtn">Save Gradient</button>
       <button id="saveQuipBtn">Save to Clipboard</button>
       <button id="removeModeBtn">Remove</button>
+      <a class="feedback-link" href="https://docs.google.com/forms/d/e/1FAIpQLSekW0elfyD3XSpt5MwzraT_qFI-e3QbgWdTO0WIl-MGH949qg/viewform?usp=sharing&ouid=115826567347856675529" target="_blank" rel="noopener noreferrer">Feedback</a>
     </div>
 
     <div class="saved-sections">
-      <div class="saved-block saved-block-gradients">
-        <div class="saved-title">Saved Gradients</div>
-        <div id="gradientList" class="saved-grid"></div>
-      </div>
-
       <div class="saved-block saved-block-wide">
         <div class="saved-title">Clipboard</div>
         <div id="quipList" class="saved-grid"></div>

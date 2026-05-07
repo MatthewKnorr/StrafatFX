@@ -13,6 +13,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const el = id => document.getElementById(id);
 
   const input = el("textInput");
+  const randomQuipsBody = el("randomQuipsBody");
+  const randomQuipsList = el("randomQuipsList");
+  const randomQuipCategories = el("randomQuipCategories");
+  const toggleQuipsBtn = el("toggleQuipsBtn");
+  const refreshQuipsBtn = el("refreshQuipsBtn");
   const output = el("output");
   const preview = el("preview");
   const outputDisplay = el("outputDisplay");
@@ -20,7 +25,16 @@ window.addEventListener("DOMContentLoaded", () => {
   const gradientBar = el("gradientBar");
   const gradientHandles = el("gradientHandles");
   const gradientToolbar = el("gradientToolbar");
+  const recentGradients = el("recentGradients");
   const colorCountButtons = [...document.querySelectorAll(".color-count-btn")];
+  const advancedTabs = [...document.querySelectorAll(".advanced-tab")];
+  const advancedTabPanels = [...document.querySelectorAll(".advanced-tab-panel")];
+  const advancedToggle = el("advancedToggle");
+  const advancedContent = el("advancedContent");
+  const advancedCurrent = el("advancedCurrent");
+  const temperatureSlider = el("temperatureSlider");
+  const temperatureValue = el("temperatureValue");
+  const themeModeButtons = [...document.querySelectorAll(".theme-mode")];
   const intensityToggle = el("intensityToggle");
   const intensityContent = el("intensityContent");
   const intensityCurrent = el("intensityCurrent");
@@ -38,7 +52,32 @@ window.addEventListener("DOMContentLoaded", () => {
   const bold = el("bold");
   const italic = el("italic");
   const underline = el("underline");
+  const strike = el("strike");
   const superscript = el("superscript");
+  const subscript = el("subscript");
+  const effectsToggle = el("effectsToggle");
+  const effectsResetBtn = el("effectsResetBtn");
+  const gradientResetBtn = el("gradientResetBtn");
+  const effectsContent = el("effectsContent");
+  const effectsCurrent = el("effectsCurrent");
+  const caseEffect = el("caseEffect");
+  const cspace = el("cspace");
+  const mspace = el("mspace");
+  const align = el("align");
+  const pos = el("pos");
+  const indent = el("indent");
+  const lineIndent = el("lineIndent");
+  const margin = el("margin");
+  const widthEffect = el("widthEffect");
+  const lineHeight = el("lineHeight");
+  const rotate = el("rotate");
+  const voffset = el("voffset");
+  const mark = el("mark");
+  const markEnabled = el("markEnabled");
+  const highlightCustomBtn = el("highlightCustomBtn");
+  const space = el("space");
+  const highlightSwatches = [...document.querySelectorAll(".highlight-swatch")];
+  const optionButtons = [...document.querySelectorAll(".option-effect")];
 
   const depth = el("depth");
   const stepValue = el("stepValue");
@@ -50,7 +89,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const saveQuipBtn = el("saveQuipBtn");
   const removeModeBtn = el("removeModeBtn");
 
-  const gradientList = el("gradientList");
+  const gradientList = null;
   const quipList = el("quipList");
 
   const copyBtn = el("copyBtn");
@@ -68,10 +107,32 @@ window.addEventListener("DOMContentLoaded", () => {
   let presetData = {};
   let activePresetCategory = "";
   let activePresetKey = "";
+  let colorTemperature = +(localStorage.getItem("gd-color-temperature") || 0);
+  let activeThemeMode = localStorage.getItem("gd-theme-mode") || "dark";
   const favoritePresetCategory = "Favorites";
+  const userPresetCategory = "User Created";
+  const gamerQuipCategories = {
+    gg: ["gg", "ggs", "good round", "well played", "wp", "solid game", "run it back", "one more", "last game fr", "we're back", "comeback time"],
+    ez: ["ez", "gg ez", "get stomped", "sit", "skill issue", "outplayed", "deleted", "cooked", "fried", "smoked", "rolled", "washed", "dogwater", "free", "too free", "hold that", "stay mad", "cope", "sent to lobby", "back to lobby", "lobby speedrun", "actual npc", "bot behavior"],
+    niceShot: ["nice shot", "nice try", "nt", "that was nasty", "clean", "dirty", "filthy", "sheesh", "insane", "one tap", "beamed", "lasered", "melted", "cracked", "clipped", "squad wipe", "team wipe", "ace", "clutch", "ice in veins", "calculated", "big brain", "clip that"],
+    comms: ["behind you", "on me", "push push", "full send", "send it", "rotate", "reset", "play slow", "flank", "third party", "RUN", "help", "he's one", "literally one", "I lied", "reloading", "no ammo", "peek me", "don't peek", "focus up", "lock in"],
+    reactions: ["sad", "woah", "lmao", "no way", "WHAT", "tf", "bruh", "nahhh", "yikes", "rip", "unlucky", "tragic", "not like this", "ain't no way", "no shot", "goofy", "bro thought", "almost", "I'm dead", "I'm cooked", "we're cooked", "chalked", "hit reg?", "how did that miss", "how did that hit"],
+    memes: ["I'm him", "you're not him", "built different", "throwing", "hard throwing", "sold", "my bad", "mb", "carry me", "team diff", "aim diff", "brain diff", "ping diff", "rank diff", "massive W", "big L", "caught lacking", "bro got erased", "jump scare", "tryhard", "sweat lobby", "bot lobby", "final boss", "side quest", "main character", "plot armor", "robbed", "scammed", "let me cook", "stop cooking", "we ball", "we do not ball", "vibes gone", "vibes restored", "absolute cinema", "peak gaming", "delete the clip", "never happened", "zero IQ", "aimbot", "reported", "walls?", "sus", "nerf him", "buff me", "OP", "broken", "balanced btw", "go next", "next", "it's over"]
+  };
+  const gamerQuipCategoryLabels = {
+    all: "All",
+    gg: "GG",
+    ez: "EZ",
+    niceShot: "Nice Shot",
+    comms: "Comms",
+    reactions: "Reacts",
+    memes: "Memes"
+  };
+  const requiredQuipCategories = ["gg", "ez", "niceShot"];
+  let activeQuipCategory = "all";
 
   function stripClosingTags(text) {
-    return text.replace(/<\/(b|i|u|sup)>/g, "");
+    return text.replace(/<\/(b|i|u|s|sup|sub|allcaps|uppercase|smallcaps|lowercase|cspace|mspace|align|pos|indent|line-indent|margin|width|line-height|rotate|voffset|mark|alpha|size|font-weight)>/g, "");
   }
 
   function showToast(text) {
@@ -84,6 +145,83 @@ window.addEventListener("DOMContentLoaded", () => {
     t.textContent = text;
     t.classList.add("show");
     setTimeout(() => t.classList.remove("show"), 1200);
+  }
+
+  function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function getQuipPool(category = activeQuipCategory) {
+    if (category === "all") {
+      return Object.values(gamerQuipCategories).flat();
+    }
+
+    return gamerQuipCategories[category] || [];
+  }
+
+  function pullRandomFromPool(pool) {
+    if (!pool.length) return "";
+    const index = randomInt(0, pool.length - 1);
+    return pool.splice(index, 1)[0];
+  }
+
+  function pickRandomQuips(count = 10) {
+    const pool = [...getQuipPool()];
+    const picks = [];
+
+    if (activeQuipCategory === "all") {
+      requiredQuipCategories.forEach(category => {
+        const pick = pullRandomFromPool([...(gamerQuipCategories[category] || [])]);
+        if (pick && !picks.includes(pick)) picks.push(pick);
+      });
+    }
+
+    while (pool.length && picks.length < count) {
+      const pick = pullRandomFromPool(pool);
+      if (!picks.includes(pick)) picks.push(pick);
+    }
+
+    return picks;
+  }
+
+  function renderRandomQuipCategories() {
+    if (!randomQuipCategories) return;
+
+    randomQuipCategories.innerHTML = "";
+
+    Object.entries(gamerQuipCategoryLabels).forEach(([key, label]) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "random-quip-category";
+      button.classList.toggle("active", key === activeQuipCategory);
+      button.textContent = label;
+      button.dataset.category = key;
+      randomQuipCategories.appendChild(button);
+    });
+  }
+
+  function renderRandomQuips() {
+    if (!randomQuipsList) return;
+
+    randomQuipsList.innerHTML = "";
+
+    pickRandomQuips().forEach(quip => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "random-quip";
+      button.textContent = quip;
+      button.dataset.quip = quip;
+      randomQuipsList.appendChild(button);
+    });
+  }
+
+  function scheduleRandomQuipRefresh() {
+    window.clearTimeout(scheduleRandomQuipRefresh.timer);
+
+    scheduleRandomQuipRefresh.timer = window.setTimeout(() => {
+      renderRandomQuips();
+      scheduleRandomQuipRefresh();
+    }, randomInt(5000, 10000));
   }
 
   function updateRemoveModeUI() {
@@ -128,6 +266,20 @@ window.addEventListener("DOMContentLoaded", () => {
       .filter(entry => entry && entry.name && Array.isArray(entry.colors) && entry.colors.length);
   }
 
+  function getUserCreatedPresets() {
+    return getList("gd-gradients")
+      .map((entry, index) => {
+        const colors = Array.isArray(entry?.colors) ? entry.colors : Array.isArray(entry) ? entry : [];
+        if (!colors.length) return null;
+        return {
+          name: entry?.name || `Saved ${index + 1}`,
+          colors: colors.map(normalizeHex),
+          key: gradientSignature(colors)
+        };
+      })
+      .filter(Boolean);
+  }
+
   function saveFavoritePresets(list) {
     saveList("gd-preset-favorites", list);
   }
@@ -138,23 +290,33 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function getPresetCatalog() {
     const favorites = getFavoritePresets();
-    if (!favorites.length) return { ...presetData };
+    const userCreated = getUserCreatedPresets();
+    const builtInCatalog = Object.fromEntries(
+      Object.entries(presetData).map(([category, entries]) => [
+        category,
+        entries.map(entry => ({
+          name: entry.name,
+          colors: entry.colors.map(normalizeHex),
+          key: gradientSignature(entry.colors)
+        }))
+      ])
+    );
+
+    const catalog = {
+      [userPresetCategory]: userCreated,
+      ...builtInCatalog
+    };
+
+    if (!favorites.length) return catalog;
+
     return {
+      [userPresetCategory]: userCreated,
       [favoritePresetCategory]: favorites.map(entry => ({
         name: entry.name,
         colors: entry.colors.map(normalizeHex),
         key: gradientSignature(entry.colors)
       })),
-      ...Object.fromEntries(
-        Object.entries(presetData).map(([category, entries]) => [
-          category,
-          entries.map(entry => ({
-            name: entry.name,
-            colors: entry.colors.map(normalizeHex),
-            key: gradientSignature(entry.colors)
-          }))
-        ])
-      )
+      ...builtInCatalog
     };
   }
 
@@ -211,6 +373,14 @@ window.addEventListener("DOMContentLoaded", () => {
           </span>
         </span>
       `;
+
+      if (activePresetCategory === userPresetCategory && state.removeMode) {
+        const removeButton = document.createElement("span");
+        removeButton.className = "preset-theme-remove";
+        removeButton.innerHTML = "&times;";
+        button.appendChild(removeButton);
+      }
+
       presetThemes.appendChild(button);
     });
   }
@@ -375,6 +545,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     intensityCurrent.textContent = modeLabel(mode);
+    updateGradientResetState();
 
     if (track && window.gtag) {
       window.gtag('event', 'mode_change', {
@@ -426,13 +597,49 @@ window.addEventListener("DOMContentLoaded", () => {
     return { h: hue * 60, s: saturation, l: lightness };
   }
 
+  function hslToRgb(h, s, l) {
+    const c = (1 - Math.abs(2 * l - 1)) * s;
+    const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+    const m = l - c / 2;
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+    if (h < 60) [r, g, b] = [c, x, 0];
+    else if (h < 120) [r, g, b] = [x, c, 0];
+    else if (h < 180) [r, g, b] = [0, c, x];
+    else if (h < 240) [r, g, b] = [0, x, c];
+    else if (h < 300) [r, g, b] = [x, 0, c];
+    else [r, g, b] = [c, 0, x];
+
+    return {
+      r: Math.round((r + m) * 255),
+      g: Math.round((g + m) * 255),
+      b: Math.round((b + m) * 255)
+    };
+  }
+
+  function pickHueForTemperature() {
+    const bias = colorTemperature / 100;
+    const mixedHue = Math.random() * 360;
+    const warmHue = Math.random() > 0.5
+      ? randomInt(0, 54)
+      : randomInt(320, 359);
+    const coolHue = randomInt(165, 275);
+    const chance = Math.abs(bias);
+
+    if (bias > 0 && Math.random() < chance) return warmHue;
+    if (bias < 0 && Math.random() < chance) return coolHue;
+    return mixedHue;
+  }
+
   function randColor(minDistance = 120) {
     function get() {
-      return {
-        r: Math.floor(Math.random() * 256),
-        g: Math.floor(Math.random() * 256),
-        b: Math.floor(Math.random() * 256)
-      };
+      return hslToRgb(
+        pickHueForTemperature(),
+        0.58 + Math.random() * 0.36,
+        0.42 + Math.random() * 0.24
+      );
     }
 
     function dist(a, b) {
@@ -492,14 +699,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function activeColorCount(text = input.value) {
-    const visible = visibleCount(text);
-    const maxAllowed = maxColorStops(text);
-
-    if (visible === 0) {
-      return desiredColorCount;
-    }
-
-    return Math.max(1, Math.min(desiredColorCount, maxAllowed, visible));
+    return Math.max(1, Math.min(4, desiredColorCount));
   }
 
   function getHandlePosition(index, count) {
@@ -552,6 +752,75 @@ window.addEventListener("DOMContentLoaded", () => {
     const g = getGradientPreview();
     gradientBar.style.background = g;
     document.documentElement.style.setProperty("--slider-gradient", g);
+  }
+
+  function getRecentGradients() {
+    return getList("gd-recent-gradients")
+      .filter(entry => Array.isArray(entry?.colors) && entry.colors.length)
+      .map(entry => ({ colors: entry.colors.map(normalizeHex) }));
+  }
+
+  function renderRecentGradients() {
+    if (!recentGradients) return;
+
+    const recent = getRecentGradients();
+    recentGradients.innerHTML = "";
+    recentGradients.classList.toggle("hidden", recent.length === 0);
+
+    recent.slice(0, 7).forEach((entry, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "recent-gradient-swatch";
+      button.dataset.index = String(index);
+      button.title = entry.colors.join(", ");
+      button.style.background = getGradientPreview(entry.colors);
+      recentGradients.appendChild(button);
+    });
+  }
+
+  function rememberRecentGradient(colors) {
+    const normalized = colors.map(normalizeHex);
+    if (!normalized.length) return;
+
+    const signature = gradientSignature(normalized);
+    const next = [
+      { colors: normalized },
+      ...getRecentGradients().filter(entry => gradientSignature(entry.colors) !== signature)
+    ].slice(0, 7);
+
+    saveList("gd-recent-gradients", next);
+    renderRecentGradients();
+  }
+
+  function temperatureLabel(value) {
+    if (value <= -60) return "Cool";
+    if (value < -18) return "Cool Mix";
+    if (value >= 60) return "Warm";
+    if (value > 18) return "Warm Mix";
+    return "Mixed";
+  }
+
+  function renderTemperatureControl() {
+    if (!temperatureSlider || !temperatureValue) return;
+    temperatureSlider.value = String(colorTemperature);
+    temperatureValue.textContent = temperatureLabel(colorTemperature);
+    updateGradientResetState();
+  }
+
+  function updateGradientResetState() {
+    if (!gradientResetBtn) return;
+    gradientResetBtn.disabled = colorTemperature === 0 && state.mode === 5;
+  }
+
+  function setThemeMode(mode) {
+    activeThemeMode = mode === "light" ? "light" : "dark";
+    document.body.classList.toggle("theme-light", activeThemeMode === "light");
+    document.body.classList.toggle("theme-dark", activeThemeMode === "dark");
+    localStorage.setItem("gd-theme-mode", activeThemeMode);
+
+    themeModeButtons.forEach(button => {
+      button.classList.toggle("active", button.dataset.themeMode === activeThemeMode);
+    });
   }
 
   function updateColorCountButtons() {
@@ -638,6 +907,10 @@ window.addEventListener("DOMContentLoaded", () => {
         event_category: 'feature'
       });
     }
+
+    if (track) {
+      rememberRecentGradient(state.colors);
+    }
   }
 
   function setColorAt(index, color, options = {}) {
@@ -647,17 +920,13 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function applySavedGradient(colors) {
-    if (!input.value.trim()) {
-      return { ok: false, message: `Type more text to use this ${colors.length}-color gradient` };
-    }
-
     desiredColorCount = colors.length;
     paletteColors = ensurePaletteSize(colors.length);
     colors.forEach((color, index) => {
       paletteColors[index] = normalizeHex(color);
     });
 
-    setColors(paletteColors.slice(0, colors.length));
+    setColors(paletteColors.slice(0, desiredColorCount));
     return { ok: true };
   }
 
@@ -731,6 +1000,125 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function effectInputs() {
+    return [
+      bold, italic, underline, strike, superscript, subscript, caseEffect, cspace, mspace, align,
+      pos, indent, lineIndent, margin, widthEffect, lineHeight, rotate, voffset, mark,
+      markEnabled, space
+    ].filter(Boolean);
+  }
+
+  function getEffects() {
+    return {
+      bold: bold?.checked || false,
+      italic: italic?.checked || false,
+      underline: underline?.checked || false,
+      strike: strike?.checked || false,
+      superscript: superscript?.checked || false,
+      subscript: subscript?.checked || false,
+      caseEffect: caseEffect?.value || "",
+      cspace: cspace?.value || "",
+      mspace: mspace?.value || "",
+      align: align?.value || "",
+      pos: pos?.value || "",
+      indent: indent?.value || "",
+      lineIndent: lineIndent?.value || "",
+      margin: margin?.value || "",
+      width: widthEffect?.value || "",
+      lineHeight: lineHeight?.value || "",
+      rotate: rotate?.value || "",
+      voffset: voffset?.value || "",
+      mark: mark?.value || "#ffff00",
+      markEnabled: markEnabled?.checked || false,
+      space: space?.value || ""
+    };
+  }
+
+  function hasActiveEffect() {
+    return getActiveEffectLabels().length > 0;
+  }
+
+  function getActiveEffectLabels() {
+    const effects = getEffects();
+    const labels = [];
+
+    if (effects.bold) labels.push("Bold");
+    if (effects.italic) labels.push("Italic");
+    if (effects.underline) labels.push("Underline");
+    if (effects.strike) labels.push("Strike");
+    if (effects.superscript) labels.push("Sup");
+    if (effects.subscript) labels.push("Sub");
+    if (effects.caseEffect) labels.push(effects.caseEffect.replace("-", " "));
+    if (effects.cspace) labels.push("Letter Space");
+    if (effects.mspace) labels.push("Fixed Width");
+    if (effects.align) labels.push(`Align ${effects.align}`);
+    if (effects.pos) labels.push("Position");
+    if (effects.indent) labels.push("Indent");
+    if (effects.lineIndent) labels.push("Line Indent");
+    if (effects.margin) labels.push("Margin");
+    if (effects.width) labels.push("Width");
+    if (effects.lineHeight) labels.push("Line Height");
+    if (effects.rotate) labels.push("Rotate");
+    if (effects.voffset) labels.push("V Offset");
+    if (effects.markEnabled) labels.push("Color Block");
+    if (effects.space) labels.push("Space");
+
+    return labels;
+  }
+
+  function updateEffectsSummary() {
+    const labels = getActiveEffectLabels();
+    effectsCurrent.textContent = labels.length ? labels.slice(0, 3).join(", ") + (labels.length > 3 ? ` +${labels.length - 3}` : "") : "Off";
+    effectsCurrent.title = labels.length ? labels.join(", ") : "No rich text effects";
+    effectsResetBtn.disabled = labels.length === 0;
+  }
+
+  function updateHighlightUI() {
+    const color = mark?.value || "#ffff00";
+
+    document.documentElement.style.setProperty("--highlight-current", color);
+
+    highlightSwatches.forEach(button => {
+      button.classList.toggle("active", button.dataset.color.toLowerCase() === color.toLowerCase());
+    });
+  }
+
+  function updateOptionButtons() {
+    optionButtons.forEach(button => {
+      const target = el(button.dataset.optionTarget);
+      if (!target) return;
+
+      button.classList.toggle("active", target.value === button.dataset.optionValue);
+    });
+  }
+
+  function resetEffects() {
+    effectInputs().forEach(control => {
+      if (control.type === "checkbox") {
+        control.checked = false;
+      } else if (control.type === "range") {
+        control.value = control.defaultValue;
+      } else if (control.tagName === "SELECT") {
+        control.value = "";
+      } else if (control.type === "color") {
+        control.value = control.defaultValue || "#ffff00";
+      } else {
+        control.value = "";
+      }
+    });
+
+    updateHighlightUI();
+    updateOptionButtons();
+  }
+
+  function resetGradientControls() {
+    colorTemperature = 0;
+    localStorage.setItem("gd-color-temperature", "0");
+    autoIntensityManaged = false;
+    setMode(5);
+    renderTemperatureControl();
+  }
+
   randomBtn.innerHTML = `<i class="fa-solid fa-shuffle"></i>`;
   swapBtn.innerHTML = `<i class="fa-solid fa-right-left"></i>`;
   presetBtn.innerHTML = `<i class="fa-solid fa-swatchbook"></i>`;
@@ -779,10 +1167,152 @@ window.addEventListener("DOMContentLoaded", () => {
     };
   });
 
+  advancedToggle.onclick = () => {
+    advancedContent.classList.toggle("hidden");
+    const open = !advancedContent.classList.contains("hidden");
+    advancedToggle.classList.toggle("open", open);
+    advancedCurrent.textContent = open ? "Open" : "Closed";
+
+    if (open) {
+      intensityContent?.classList.remove("hidden");
+      intensityToggle?.classList.add("open");
+    }
+  };
+
+  advancedTabs.forEach(tab => {
+    tab.onclick = () => {
+      const activeTab = tab.dataset.advancedTab;
+
+      advancedTabs.forEach(button => {
+        const active = button.dataset.advancedTab === activeTab;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-selected", String(active));
+      });
+
+      advancedTabPanels.forEach(panel => {
+        panel.classList.toggle("hidden", panel.dataset.advancedPanel !== activeTab);
+      });
+    };
+  });
+
   intensityToggle.onclick = () => {
     intensityContent.classList.toggle("hidden");
     intensityToggle.classList.toggle("open", !intensityContent.classList.contains("hidden"));
   };
+
+  effectsToggle.onclick = () => {
+    effectsContent.classList.remove("hidden");
+    effectsToggle.classList.add("open");
+  };
+
+  effectsResetBtn.onclick = () => {
+    resetEffects();
+    update();
+    showToast("Text effects reset");
+  };
+
+  gradientResetBtn.onclick = () => {
+    resetGradientControls();
+    update();
+    showToast("Gradient controls reset");
+  };
+
+  highlightSwatches.forEach(button => {
+    button.onclick = () => {
+      mark.value = button.dataset.color;
+      markEnabled.checked = true;
+      updateHighlightUI();
+      update();
+    };
+  });
+
+  if (highlightCustomBtn && mark) {
+    highlightCustomBtn.onclick = () => {
+      mark.click();
+    };
+  }
+
+  mark?.addEventListener("input", () => {
+    if (markEnabled) markEnabled.checked = true;
+    updateHighlightUI();
+    update();
+  });
+
+  optionButtons.forEach(button => {
+    button.onclick = () => {
+      const target = el(button.dataset.optionTarget);
+      if (!target) return;
+
+      const nextValue = button.dataset.optionValue || "";
+      const canToggleOff = button.dataset.optionTarget === "caseEffect";
+      target.value = canToggleOff && target.value === nextValue ? "" : nextValue;
+      updateOptionButtons();
+      update();
+    };
+  });
+
+  randomQuipsList?.addEventListener("click", event => {
+    const button = event.target.closest(".random-quip");
+    if (!button) return;
+
+    input.value = button.dataset.quip || button.textContent;
+    update();
+    input.focus();
+    showToast("Random text applied");
+  });
+
+  randomQuipCategories?.addEventListener("click", event => {
+    const button = event.target.closest(".random-quip-category");
+    if (!button) return;
+
+    activeQuipCategory = button.dataset.category || "all";
+    renderRandomQuipCategories();
+    renderRandomQuips();
+    scheduleRandomQuipRefresh();
+  });
+
+  toggleQuipsBtn?.addEventListener("click", () => {
+    randomQuipsBody?.classList.toggle("hidden");
+    const open = !randomQuipsBody?.classList.contains("hidden");
+    toggleQuipsBtn.classList.toggle("active", open);
+    toggleQuipsBtn.setAttribute("aria-expanded", String(open));
+    toggleQuipsBtn.setAttribute("aria-label", open ? "Collapse verbal arsenal" : "Expand verbal arsenal");
+    refreshQuipsBtn?.classList.toggle("hidden", !open);
+  });
+
+  refreshQuipsBtn?.addEventListener("click", () => {
+    if (randomQuipsBody?.classList.contains("hidden")) {
+      randomQuipsBody.classList.remove("hidden");
+      toggleQuipsBtn.classList.add("active");
+      toggleQuipsBtn.setAttribute("aria-expanded", "true");
+      toggleQuipsBtn.setAttribute("aria-label", "Collapse verbal arsenal");
+      refreshQuipsBtn.classList.remove("hidden");
+    }
+
+    renderRandomQuips();
+    scheduleRandomQuipRefresh();
+  });
+
+  recentGradients?.addEventListener("click", event => {
+    const button = event.target.closest(".recent-gradient-swatch");
+    if (!button) return;
+
+    const entry = getRecentGradients()[+button.dataset.index];
+    if (!entry) return;
+
+    applySavedGradient(entry.colors);
+    showToast("Recent gradient restored");
+  });
+
+  temperatureSlider?.addEventListener("input", () => {
+    colorTemperature = +temperatureSlider.value;
+    localStorage.setItem("gd-color-temperature", String(colorTemperature));
+    renderTemperatureControl();
+  });
+
+  themeModeButtons.forEach(button => {
+    button.onclick = () => setThemeMode(button.dataset.themeMode);
+  });
 
   copyBtn.onclick = () => {
     const text = stripClosingTags(output.value);
@@ -821,7 +1351,7 @@ window.addEventListener("DOMContentLoaded", () => {
   };
 
   saveGradientBtn.onclick = () => {
-    const colors = paletteColors.slice(0, activeColorCount()).map(normalizeHex);
+    const colors = paletteColors.slice(0, desiredColorCount).map(normalizeHex);
     if (!colors.length) return;
 
     let list = getList("gd-gradients");
@@ -838,6 +1368,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     list.push({ colors });
     saveList("gd-gradients", list);
+    activePresetCategory = userPresetCategory;
+    activePresetKey = signature;
+    ensureActivePresetSelection();
+    renderPresetCategories();
+    renderPresetThemes();
+    renderPresetDetail();
     renderSaved(quipList, gradientList, savedOptions);
     update();
     showToast("Gradient saved");
@@ -904,13 +1440,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     const built = build(text, depth);
+    const effects = getEffects();
 
-    const styled = applyStyles(built, {
-      bold: bold.checked,
-      italic: italic.checked,
-      underline: underline.checked,
-      superscript: superscript.checked
-    });
+    const styled = applyStyles(built, effects);
 
     const clean = stripClosingTags(styled);
 
@@ -933,12 +1465,7 @@ window.addEventListener("DOMContentLoaded", () => {
       trackAutoCopy("auto_copy_trigger", clean);
     }
 
-    renderPreview(preview, parts(text, depth), {
-      bold: bold.checked,
-      italic: italic.checked,
-      underline: underline.checked,
-      superscript: superscript.checked
-    });
+    renderPreview(preview, parts(text, depth), effects);
 
     if (window.gtag && text.length > 3) {
       window.gtag('event', 'active_use', {
@@ -949,6 +1476,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     fitPreview();
     updateCharCount();
+    updateEffectsSummary();
   }
 
   saveQuipBtn.onclick = () => {
@@ -978,10 +1506,16 @@ window.addEventListener("DOMContentLoaded", () => {
   removeModeBtn.onclick = () => {
     state.removeMode = !state.removeMode;
     updateRemoveModeUI();
+    renderPresetThemes();
     renderSaved(quipList, gradientList, savedOptions);
   };
 
-  [input, bold, italic, underline, superscript].forEach(e => e.oninput = update);
+  [input, ...effectInputs()].forEach(e => e.oninput = () => {
+    updateOptionButtons();
+    update();
+  });
+
+  updateOptionButtons();
 
   const savedOptions = {
     onApplyGradient: applySavedGradient,
@@ -1005,6 +1539,21 @@ window.addEventListener("DOMContentLoaded", () => {
   presetThemes.onclick = event => {
     const button = event.target.closest(".preset-theme");
     if (!button) return;
+
+    if (event.target.closest(".preset-theme-remove") && activePresetCategory === userPresetCategory) {
+      const signature = button.dataset.signature;
+      const gradients = getList("gd-gradients");
+      saveList("gd-gradients", gradients.filter(entry => {
+        const colors = Array.isArray(entry?.colors) ? entry.colors : Array.isArray(entry) ? entry : [];
+        return gradientSignature(colors) !== signature;
+      }));
+      ensureActivePresetSelection();
+      renderPresetCategories();
+      renderPresetThemes();
+      renderPresetDetail();
+      showToast("Gradient removed");
+      return;
+    }
 
     activePresetKey = button.dataset.signature;
     renderPresetThemes();
@@ -1044,6 +1593,13 @@ window.addEventListener("DOMContentLoaded", () => {
     await loadPresetGradients();
     renderSaved(quipList, gradientList, savedOptions);
     renderAutoCopyButton();
+    renderRecentGradients();
+    renderTemperatureControl();
+    setThemeMode(activeThemeMode);
+    updateHighlightUI();
+    renderRandomQuipCategories();
+    renderRandomQuips();
+    scheduleRandomQuipRefresh();
 
     initFloating(20);
 
@@ -1076,12 +1632,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const built = build(text, depth);
 
-    const styled = applyStyles(built, {
-      bold: bold.checked,
-      italic: italic.checked,
-      underline: underline.checked,
-      superscript: superscript.checked
-    });
+    const styled = applyStyles(built, getEffects());
 
     const clean = stripClosingTags(styled);
     const len = clean.length;

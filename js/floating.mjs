@@ -41,7 +41,30 @@ function releaseAsset(src) {
     usage.set(src, Math.max(0, count - 1));
 }
 
-function spawnItem(container) {
+function distance(a, b) {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function getSpawnPosition(items, fromLeft) {
+    const x = fromLeft ? -70 : window.innerWidth + 70;
+    const minYGap = Math.min(180, Math.max(104, window.innerHeight * 0.16));
+    const minScreenDistance = Math.min(260, Math.max(170, window.innerWidth * 0.16));
+
+    for (let attempt = 0; attempt < 18; attempt++) {
+        const y = 48 + Math.random() * Math.max(1, window.innerHeight - 96);
+        const candidate = { x, y };
+        const spaced = items.every(item => {
+            const nearSpawnSide = fromLeft ? item.x < 300 : item.x > window.innerWidth - 300;
+            return Math.abs(item.y - y) >= minYGap && (!nearSpawnSide || distance(candidate, item) >= minScreenDistance);
+        });
+
+        if (spaced) return candidate;
+    }
+
+    return null;
+}
+
+function spawnItem(container, items) {
     const src = getAvailableAsset();
     if (!src) return null;
 
@@ -60,17 +83,25 @@ function spawnItem(container) {
 
     const fromLeft = Math.random() > 0.5;
 
-    let x = fromLeft ? -60 : window.innerWidth + 60;
-    let y = Math.random() * window.innerHeight;
+    const position = getSpawnPosition(items, fromLeft);
+    if (!position) {
+        el.remove();
+        releaseAsset(src);
+        return null;
+    }
 
-    // SLOWER movement
-    const speed = 0.08 + Math.random() * 0.12;
+    let x = position.x;
+    let y = position.y;
+
+    const speed = 0.1 + Math.random() * 0.16;
 
     const speedX = fromLeft ? speed : -speed;
-    const speedY = (Math.random() - 0.5) * 0.05;
+    const speedY = (Math.random() - 0.5) * 0.08;
 
-    let rot = Math.random() * 360;
-    const rotSpeed = (Math.random() - 0.5) * 0.15;
+    const rotBase = (Math.random() - 0.5) * 12;
+    const rotPhase = Math.random() * Math.PI * 2;
+    const rotDriftSpeed = 0.006 + Math.random() * 0.01;
+    const rotAmplitude = 3 + Math.random() * 6;
 
     return {
         el,
@@ -79,8 +110,10 @@ function spawnItem(container) {
         y,
         speedX,
         speedY,
-        rot,
-        rotSpeed
+        rotBase,
+        rotPhase,
+        rotDriftSpeed,
+        rotAmplitude
     };
 }
 
@@ -95,11 +128,13 @@ export function initFloating() {
 
     // SPAWN LOOP (this fixes your problem)
     function spawnLoop() {
-        const newItem = spawnItem(container);
-        if (newItem) items.push(newItem);
+        if (items.length < 12) {
+            const newItem = spawnItem(container, items);
+            if (newItem) items.push(newItem);
+        }
 
         // RANDOM INTERVAL (staggered spawning)
-        const delay = 800 + Math.random() * 2000;
+        const delay = 900 + Math.random() * 1700;
         setTimeout(spawnLoop, delay);
     }
 
@@ -111,14 +146,14 @@ export function initFloating() {
 
             item.x += item.speedX;
             item.y += item.speedY;
-            item.rot += item.rotSpeed;
+            item.rotPhase += item.rotDriftSpeed;
+            const rot = item.rotBase + Math.sin(item.rotPhase) * item.rotAmplitude;
 
-            // subtle wave (makes it feel natural)
-            item.y += Math.sin(item.x * 0.01) * 0.15;
+            item.y += Math.sin(item.x * 0.014) * 0.16;
 
             item.el.style.transform = `
                 translate(${item.x}px, ${item.y}px)
-                rotate(${item.rot}deg)
+                rotate(${rot}deg)
             `;
 
             // REMOVE when off screen

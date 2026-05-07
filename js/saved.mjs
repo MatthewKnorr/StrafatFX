@@ -11,8 +11,10 @@ function renderStyledText(raw){
   let italic=false;
   let underline=false;
   let superscript=false;
+  let subscript=false;
+  let strike=false;
 
-  const regex=/<(#[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{3})?)>|<(\/?)(b|i|u|sup)>|(.)/g;
+  const regex=/<(#[0-9A-Fa-f]{3}(?:[0-9A-Fa-f]{3})?)>|<(\/?)([^>]+)>|(.)/g;
   let match;
 
   while((match=regex.exec(raw))){
@@ -21,10 +23,14 @@ function renderStyledText(raw){
     }else if(match[3]){
       const closing=match[2]==="/";
 
-      if(match[3]==="b") bold=!closing;
-      if(match[3]==="i") italic=!closing;
-      if(match[3]==="u") underline=!closing;
-      if(match[3]==="sup") superscript=!closing;
+      const tagName=match[3].split("=")[0];
+
+      if(tagName==="b") bold=!closing;
+      if(tagName==="i") italic=!closing;
+      if(tagName==="u") underline=!closing;
+      if(tagName==="s") strike=!closing;
+      if(tagName==="sup") superscript=!closing;
+      if(tagName==="sub") subscript=!closing;
     }else{
       const s=document.createElement("span");
       s.textContent=match[4];
@@ -32,10 +38,14 @@ function renderStyledText(raw){
 
       if(bold) s.style.fontWeight="700";
       if(italic) s.style.fontStyle="italic";
-      if(underline) s.style.textDecoration="underline";
+      if(underline || strike) s.style.textDecoration=[underline ? "underline" : "", strike ? "line-through" : ""].filter(Boolean).join(" ");
       if(superscript){
         s.style.fontSize="0.65em";
         s.style.verticalAlign="super";
+      }
+      if(subscript){
+        s.style.fontSize="0.65em";
+        s.style.verticalAlign="sub";
       }
 
       wrapper.appendChild(s);

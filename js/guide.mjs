@@ -40,7 +40,7 @@ export function initGuide({ depth, onOpen } = {}) {
     <h3 class="guide-subtitle">How to Use</h3>
 
     <p>
-      StraftatFX lets you generate gradient-colored text for use in Straftat usernames and chat.
+      StraftatFX v3 lets you generate gradient-colored text for Straftat usernames and chat, then preview and copy the exact formatted result.
     </p>
 
     <div class="guide-logo-demo" aria-hidden="true">
@@ -49,7 +49,7 @@ export function initGuide({ depth, onOpen } = {}) {
 
     <h3>Overview</h3>
     <p>
-      Your text is blended between two selected colors to create a gradient.
+      Your text is blended across one to four selected colors. The page updates the preview, output, counters, and saved clipboard as you work.
     </p>
     <p>
       Depending on the mode, this gradient is applied either smoothly across each character or in stepped color groups.
@@ -64,9 +64,11 @@ export function initGuide({ depth, onOpen } = {}) {
     <h3>Usage</h3>
     <ul>
       <li><b>Enter text</b><br>Type the username or message you want to style.</li>
+      <li><b>Try Verbal Arsenal</b><br>Open the quip drawer for quick gamer phrases, category filters, and random suggestions.</li>
       <li><b>Select colors</b><br>Pick from the available color stops for your current text length. These define the full range of the gradient.</li>
+      <li><b>Use presets</b><br>Open the palette browser to apply built-in presets, save favorites, or return to user-created gradients.</li>
       <li>
-        <b>Choose mode</b>
+        <b>Choose gradient intensity</b>
         <ul>
           <li><b>Per Letter</b> -> each character shifts gradually (smooth gradient)</li>
           <li><b>1/2, 1/3, 1/4</b> -> colors are grouped into larger steps</li>
@@ -74,7 +76,7 @@ export function initGuide({ depth, onOpen } = {}) {
           <li><b>Custom</b> -> manually control how many color steps are used</li>
         </ul>
       </li>
-      <li><b>Optional styles</b><br>Apply bold, italic, underline, or superscript formatting to the final result.</li>
+      <li><b>Optional styles</b><br>Open Advanced Controls for bold, italic, underline, strike, superscript, subscript, small-caps, uppercase, alignment, letter spacing, fixed width, position, width, rotation, and vertical offset.</li>
       <li><b>Copy output</b><br>The generated text is ready to paste directly into Straftat.</li>
       <li><b>Auto Copy</b><br>Turn on Auto Copy if you want StraftatFX to copy the output automatically whenever you make a change.</li>
       <li><b>Color limits</b><br>Higher color counts unlock only when you have enough visible text entered. This keeps extra color stops from appearing before the gradient has enough characters to spread across.</li>
@@ -84,7 +86,17 @@ export function initGuide({ depth, onOpen } = {}) {
     <ul>
       <li><b>Shuffle</b> -> generates a random color combination</li>
       <li><b>Swap</b> -> switches your start and end colors</li>
+      <li><b>Preset Palettes</b> -> opens the preset browser, favorites, and user-created gradients</li>
+      <li><b>Advanced Controls</b> -> opens TEXT EFFECTS and GRADIENT CONTROLS as compact floating sections</li>
+      <li><b>Text Effects reset</b> -> clears text styling, spacing, and layout effects</li>
+      <li><b>Gradient Controls reset</b> -> returns intensity to Per Letter and temperature to Mixed</li>
+      <li><b>Temperature</b> -> nudges generated random colors cooler or warmer</li>
+      <li><b>Save Gradient</b> -> stores the current palette in your browser</li>
+      <li><b>Save to Clipboard</b> -> stores the current formatted output in the in-app clipboard</li>
+      <li><b>Remove</b> -> toggles cleanup mode for saved clipboard items and user-created gradients</li>
+      <li><b>Feedback</b> -> opens a short Google Form in a new tab</li>
       <li><b>Auto Copy</b> -> toggles automatic copying on or off</li>
+      <li><b>Theme buttons</b> -> switch between dark and light color modes</li>
       <li><b>Logo</b> -> the main StraftatFX logo can be clicked on the page for an extra effect</li>
       <li><b>GitHub</b> -> view the project source code</li>
     </ul>
@@ -106,6 +118,7 @@ export function initGuide({ depth, onOpen } = {}) {
       <li>Steam text may be limited to about 32 characters depending on platform</li>
       <li>Not all platforms support colored text formatting</li>
       <li>Higher color counts need enough entered text before they become available</li>
+      <li>Negative values are supported for controls where they make sense, including letter spacing, position, rotation, and vertical offset</li>
     </ul>
 
     <h3>Tip</h3>

@@ -1,86 +1,71 @@
 # StraftatFX
 
-StraftatFX is a lightweight, browser-based gradient text generator built for creating styled usernames, tags, and chat text for Straftat. It focuses on speed, simplicity, and giving users clear control over how their text looks before copying it anywhere.
+StraftatFX v3 is a lightweight browser-based text generator for creating gradient usernames, tags, and chat text for Straftat. It gives you a live visual preview, the exact formatted output string, and local tools for saving palettes and reusable clipboard entries.
 
-## Features
+## Current Features
 
-- Smooth per-letter and stepped gradient text generation
-- Support for 1 to 4 color gradients depending on entered text length
-- Custom color selection with live gradient preview
-- Preset gradients with favorites
-- Real-time formatted output and visual preview
-- Text styling options: bold, italic, underline, and superscript
-- Manual copy and optional auto copy
-- Saved gradients and clipboard history using localStorage
-- Toggleable remove mode for quick cleanup
-- Integrated in-app guide with live example preview
-- Output-based character counter based on the final formatted text
-- Steam-safe indicator that warns when output exceeds about 32 characters
-- Responsive interface with gradient-driven UI accents
+- One to four color gradients with live draggable color stops
+- Smooth per-letter gradients, stepped modes, single-color mode, and custom step count
+- Preset palette browser with built-in presets, favorites, and user-created gradients
+- Recent gradient swatches for quick restores
+- Color temperature control for cooler, mixed, or warmer random colors
+- Random color shuffle and color swap controls
+- Verbal Arsenal drawer with categorized quick phrases and random refresh
+- Advanced text effects with style toggles, small-caps/uppercase, alignment, spacing, and layout controls
+- Gradient Controls with resettable intensity modes and color temperature
+- Real-time visual preview and formatted output preview
+- Manual copy, optional auto copy, and saved clipboard entries
+- Remove mode for cleaning up saved clipboard items and user-created gradients
+- Lightweight feedback link to a Google Form
+- Output character counter, Steam-length indicator, and 500-character app limit warning
+- Dark and light theme buttons
+- Integrated in-app guide and header logo easter egg
 
-## How It Works
+## Usage
 
-StraftatFX generates gradients by interpolating between your selected colors and applying them across visible characters in the text.
+1. Type text in the main input, or open Verbal Arsenal and choose a quick phrase.
+2. Choose a color count. Higher color counts unlock only when the visible text is long enough.
+3. Adjust the gradient handles, shuffle colors, swap colors, or open the preset palette browser.
+4. Open Advanced Controls for Text Effects or Gradient Controls.
+5. Use Text Effects for style toggles, case, alignment, letter spacing, fixed width, position, width, rotation, and vertical offset.
+6. Use Gradient Controls for intensity modes, custom steps, temperature, or reset the gradient controls to defaults.
+7. Copy the generated output, enable Auto Copy, save the palette, or save the output to the in-app clipboard.
 
-Depending on the selected mode, the gradient is either:
+## Interface Notes
 
-- Applied per letter for a smooth transition
-- Distributed in stepped segments with `1/2`, `1/3`, or `1/4`
-- Controlled manually with the custom steps slider
-
-The app builds a formatted output string using color tags and optional style tags, then renders both:
-
-- A visual preview for readability
-- A raw output string for copying and pasting into Straftat
-
-The character counter reflects the final formatted output length, including color and style tags.
+- The large preview shows the visual result.
+- The output preview shows the generated formatting string in a readable form.
+- The copied text removes internal closing tags that Straftat does not need.
+- The total counter reflects the final formatted output length.
+- The Steam indicator warns around 32 characters.
+- Browser storage keeps saved gradients, favorites, recent gradients, clipboard items, and UI preferences.
+- The Feedback link opens a Google Form in a new tab.
 
 ## Tech Stack
 
 - HTML
 - CSS
-- JavaScript (ES modules)
+- JavaScript ES modules
 - localStorage for persistence
 - Pickr for color picking
+- Font Awesome icons
 
 ## Project Structure
 
-- `js/main.mjs` - App initialization, UI logic, presets, and event handling
-- `js/gradientEngine.mjs` - Core gradient logic and color distribution
+- `index.html` - App markup and control layout
+- `styles/styles.css` - Responsive dark glass/light theme styling
+- `js/main.mjs` - App initialization, UI logic, presets, effects, and event handling
+- `js/gradientEngine.mjs` - Core gradient generation
 - `js/gradient.mjs` - Color math and interpolation helpers
-- `js/render.mjs` - Output rendering and preview display
-- `js/formatter.mjs` - Text styling helpers
-- `js/saved.mjs` - Saved gradients and clipboard rendering
-- `js/storage.mjs` - localStorage utilities
-- `js/state.mjs` - Shared app state
-- `js/guide.mjs` - Guide modal logic and live example rendering
-- `styles/styles.css` - App styling
+- `js/render.mjs` - Formatted output rendering and visual preview
+- `js/formatter.mjs` - Text effect tag generation and value clamping
+- `js/saved.mjs` - Saved clipboard rendering
+- `js/storage.mjs` - localStorage helpers
+- `js/state.mjs` - Shared state
+- `js/guide.mjs` - In-app guide modal and live example
+- `js/floating.mjs` - Floating background assets
+- `js/logoAudio.mjs` - Header logo audio easter egg
 - `gradients.json` - Preset gradient catalog
-
-## Usage
-
-1. Enter your text.
-2. Choose your available color count.
-3. Pick your colors.
-4. Choose a gradient intensity mode.
-5. Apply optional styles.
-6. Copy the generated output or turn on auto copy.
-
-Saved gradients and clipboard entries can be reused instantly, and remove mode allows quick cleanup.
-
-## Interface Notes
-
-- The preview shows how your text will look visually
-- The output shows the actual formatted string used in-game
-- The character counter reflects the true output length
-- The Steam indicator warns when output goes beyond about 32 characters
-- The app limit is 500 output characters
-- Higher color counts unlock only when enough visible text has been entered
-
-## Release Notes
-
-- The guide includes a fallback gradient example so first-time visitors still see a proper gradient before typing
-- The header logo includes a small easter egg
 
 ## Usage Notice
 
