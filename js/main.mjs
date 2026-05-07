@@ -821,6 +821,8 @@ window.addEventListener("DOMContentLoaded", () => {
     themeModeButtons.forEach(button => {
       button.classList.toggle("active", button.dataset.themeMode === activeThemeMode);
     });
+
+    updateCharCount();
   }
 
   function updateColorCountButtons() {
@@ -1070,7 +1072,23 @@ window.addEventListener("DOMContentLoaded", () => {
     const labels = getActiveEffectLabels();
     effectsCurrent.textContent = labels.length ? labels.slice(0, 3).join(", ") + (labels.length > 3 ? ` +${labels.length - 3}` : "") : "Off";
     effectsCurrent.title = labels.length ? labels.join(", ") : "No rich text effects";
+    effectsCurrent.classList.toggle("active", labels.length > 0);
     effectsResetBtn.disabled = labels.length === 0;
+  }
+
+  function updateEffectControlStates() {
+    document.querySelectorAll(".effect-control").forEach(control => {
+      const fields = [...control.querySelectorAll("input, select")];
+      const hasValue = fields.some(field => {
+        if (field.type === "checkbox") return field.checked;
+        if (field.type === "hidden") return field.value !== "";
+        if (field.type === "color") return markEnabled?.checked && field.value !== (field.defaultValue || "#ffff00");
+        if (field.type === "range") return field.value !== field.defaultValue;
+        return field.value !== "";
+      });
+
+      control.classList.toggle("has-value", hasValue);
+    });
   }
 
   function updateHighlightUI() {
@@ -1090,6 +1108,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       button.classList.toggle("active", target.value === button.dataset.optionValue);
     });
+    updateEffectControlStates();
   }
 
   function resetEffects() {
@@ -1119,13 +1138,16 @@ window.addEventListener("DOMContentLoaded", () => {
     renderTemperatureControl();
   }
 
-  randomBtn.innerHTML = `<i class="fa-solid fa-shuffle"></i>`;
-  swapBtn.innerHTML = `<i class="fa-solid fa-right-left"></i>`;
-  presetBtn.innerHTML = `<i class="fa-solid fa-swatchbook"></i>`;
+  randomBtn.innerHTML = `<i class="fa-solid fa-shuffle"></i><span class="gradient-btn-label">Shuffle</span>`;
+  swapBtn.innerHTML = `<i class="fa-solid fa-right-left"></i><span class="gradient-btn-label">Inverse</span>`;
+  presetBtn.innerHTML = `<i class="fa-solid fa-swatchbook"></i><span class="gradient-btn-label">Preset Gradients</span>`;
 
-  randomBtn.setAttribute("aria-label", "Random");
-  swapBtn.setAttribute("aria-label", "Swap");
-  presetBtn.setAttribute("aria-label", "Preset Palettes");
+  randomBtn.setAttribute("aria-label", "Shuffle gradient");
+  swapBtn.setAttribute("aria-label", "Inverse gradient");
+  presetBtn.setAttribute("aria-label", "Preset gradients");
+  randomBtn.title = "Shuffle";
+  swapBtn.title = "Inverse";
+  presetBtn.title = "Preset Gradients";
 
   randomBtn.className = "gradient-btn";
   swapBtn.className = "gradient-btn";
@@ -1235,6 +1257,7 @@ window.addEventListener("DOMContentLoaded", () => {
   mark?.addEventListener("input", () => {
     if (markEnabled) markEnabled.checked = true;
     updateHighlightUI();
+    updateEffectControlStates();
     update();
   });
 
@@ -1637,6 +1660,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const clean = stripClosingTags(styled);
     const len = clean.length;
     const steamLimit = 32;
+    const isLightMode = document.body.classList.contains("theme-light");
 
     totalPill.textContent = `${len} / 500`;
     steamPill.textContent = `${Math.min(len, steamLimit)} / ${steamLimit} Steam Limit`;
@@ -1645,19 +1669,19 @@ window.addEventListener("DOMContentLoaded", () => {
       totalPill.style.color = "#ff6b6b";
       totalPill.style.opacity = "1";
     } else if (len > 32) {
-      totalPill.style.color = "#facc15";
+      totalPill.style.color = isLightMode ? "#8a5d00" : "#facc15";
       totalPill.style.opacity = "0.9";
     } else {
-      totalPill.style.color = "#777";
-      totalPill.style.opacity = "0.7";
+      totalPill.style.color = isLightMode ? "#3a4f41" : "#777";
+      totalPill.style.opacity = isLightMode ? "1" : "0.7";
     }
 
     if (len > steamLimit) {
-      steamPill.style.color = "#ff8b5e";
+      steamPill.style.color = isLightMode ? "#a4471f" : "#ff8b5e";
       steamPill.style.opacity = "1";
       steamPill.classList.add("warn");
     } else {
-      steamPill.style.color = "#8ad7a7";
+      steamPill.style.color = isLightMode ? "#236b3f" : "#8ad7a7";
       steamPill.style.opacity = "0.95";
       steamPill.classList.remove("warn");
     }
