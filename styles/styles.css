@@ -284,13 +284,20 @@ body.theme-light .theme-dock {
     outline: none;
 }
 
-.preset-category:hover,
-.preset-category.active {
+.preset-category:hover {
     transform: translateY(-1px);
     background: rgba(255, 255, 255, 0.13);
     border-color: rgba(255, 255, 255, 0.14);
     color: #fff;
     box-shadow: inset 0 1px rgba(255, 255, 255, 0.1), 0 12px 20px rgba(0, 0, 0, 0.22);
+}
+
+.preset-category.active {
+    transform: none;
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(255, 255, 255, 0.16);
+    color: #fff;
+    box-shadow: inset 0 -2px rgba(172, 218, 166, 0.72);
 }
 
 .preset-category:focus,
@@ -369,11 +376,11 @@ body.theme-light .theme-dock {
     background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 24%),
         linear-gradient(180deg, rgba(12, 12, 12, 0.06), rgba(8, 8, 8, 0.56));
+    transition: background 0.24s ease;
     z-index: -1;
 }
 
-.preset-theme:hover,
-.preset-theme.active {
+.preset-theme:hover {
     transform: translateY(-2px) scale(1.01);
     border-color: rgba(255, 255, 255, 0.09);
     box-shadow:
@@ -383,19 +390,32 @@ body.theme-light .theme-dock {
     color: #fff;
 }
 
-.preset-theme:hover::before,
-.preset-theme.active::before {
+.preset-theme:hover::before {
     transform: scale(1.04);
     filter: saturate(1.08);
 }
 
 .preset-theme.active {
-    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+    border-color: rgba(172, 218, 166, 0.34);
+    background: rgba(255, 255, 255, 0.055);
     box-shadow:
-        inset 0 1px rgba(255, 255, 255, 0.12),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-        0 20px 34px rgba(0, 0, 0, 0.34),
-        0 0 22px rgba(255, 255, 255, 0.04);
+        inset 0 0 0 1px rgba(255, 255, 255, 0.045),
+        inset 0 -3px rgba(172, 218, 166, 0.72),
+        0 16px 28px rgba(0, 0, 0, 0.28),
+        0 0 20px rgba(172, 218, 166, 0.08);
+    color: #fff;
+}
+
+.preset-theme.active::before {
+    transform: scale(1.015);
+    filter: saturate(1.04) brightness(1.04);
+}
+
+.preset-theme.active::after {
+    background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.14), transparent 26%),
+        linear-gradient(180deg, rgba(8, 8, 8, 0.03), rgba(8, 8, 8, 0.46));
 }
 
 .preset-theme:focus,
@@ -459,6 +479,7 @@ body.theme-light .theme-dock {
 }
 
 .preset-detail {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -494,7 +515,7 @@ body.theme-light .theme-dock {
 
 .preset-detail-hero {
     position: relative;
-    border-radius: 999px;
+    border-radius: 8px;
     border: none;
     background: rgba(0, 0, 0, 0.12);
     min-height: 132px;
